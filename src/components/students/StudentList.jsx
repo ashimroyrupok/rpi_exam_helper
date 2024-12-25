@@ -38,10 +38,10 @@ export default function StudentList() {
       );
       console.log(response,"response")
     if(response){
-        setStudents(response?.data?.data?.students);
-        console.log(response?.data?.data?.students,"41")
+        setStudents(response?.data?.data?.res);
+        console.log(response?.data?.data?.res, "41");
         // setTotalPages(Math.ceil(response.data.total / studentsPerPage));
-        setTotalPages(response?.data?.data?.totalPages);
+        setTotalPages(response?.data?.data?.meta?.totalPage);
     }
     } catch (error) {
       toast.error("Failed to fetch students");
