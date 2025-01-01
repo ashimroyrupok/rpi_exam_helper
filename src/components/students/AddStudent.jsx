@@ -26,11 +26,15 @@ export default function AddStudent() {
 
       console.log(dataToSend)
       
-      await axios.post('http://localhost:3000/students', dataToSend, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+      await axios.post(
+        "https://rpistudentmanagementserver.vercel.app/api/v1/student/create",
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
       toast.success('Student added successfully!');
       navigate('/students');
     } catch (error) {

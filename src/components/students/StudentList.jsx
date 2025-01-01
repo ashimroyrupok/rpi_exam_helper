@@ -17,7 +17,6 @@ export default function StudentList() {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-
   const fetchStudents = async () => {
     try {
       // const response = await axios.get(
@@ -29,20 +28,21 @@ export default function StudentList() {
       //   }
       // );
       const response = await axios.get(
-        `http://localhost:5000/api/v1/student/all?page=${currentPage}&limit=${studentsPerPage}&semester=${semester}&subjectCode=${searchCode}`,
+        // `http://localhost:5000/api/v1/student/all?page=${currentPage}&limit=${studentsPerPage}&semester=${semester}&subjectCode=${searchCode}`,
+        `https://rpistudentmanagementserver.vercel.app/api/v1/student/all?page=${currentPage}&limit=${studentsPerPage}&semester=${semester}&subjectCode=${searchCode}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      console.log(response,"response")
-    if(response){
+      console.log(response, "response");
+      if (response) {
         setStudents(response?.data?.data?.res);
         console.log(response?.data?.data?.res, "41");
         // setTotalPages(Math.ceil(response.data.total / studentsPerPage));
         setTotalPages(response?.data?.data?.meta?.totalPage);
-    }
+      }
     } catch (error) {
       toast.error("Failed to fetch students");
     }
@@ -52,26 +52,31 @@ export default function StudentList() {
     fetchStudents();
   }, [currentPage, semester, searchCode]);
 
-  console.log(students,"students")
+  console.log(students, "students");
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/student/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      toast.success('Student deleted successfully');
+      await axios.delete(
+        `https://rpistudentmanagementserver.vercel.app/api/v1/student/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Student deleted successfully");
       setShowDeleteConfirm(false);
       fetchStudents();
     } catch (error) {
-      toast.error('Failed to delete student');
+      toast.error("Failed to delete student");
     }
   };
 
   const handleUpdate = async (id, updatedData) => {
+    console.log(updatedData,"updatedData")
     try {
-      await axios.put(
-        `http://localhost:5000/api/v1/student/update/${id}`,
+      await axios.patch(
+        `https://rpistudentmanagementserver.vercel.app/api/v1/student/update/${id}`,
+        // `http://localhost:5000/api/v1/student/update/${id}`,
         updatedData,
         {
           headers: {
@@ -79,10 +84,10 @@ export default function StudentList() {
           },
         }
       );
-      toast.success('Student updated successfully');
+      toast.success("Student updated successfully");
       fetchStudents();
     } catch (error) {
-      toast.error('Failed to update student');
+      toast.error("Failed to update student");
     }
   };
 
@@ -147,7 +152,7 @@ export default function StudentList() {
                   <td className="px-6 py-4">{student.regulationYear}</td>
                   <td className="px-6 py-4">{student.semester}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                  <button
+                    <button
                       onClick={() => {
                         setSelectedStudent(student);
                         setShowUpdateModal(true);
@@ -193,29 +198,28 @@ export default function StudentList() {
             Next
           </button>
         </div>
-
       </div>
-        {showUpdateModal && selectedStudent && (
-          <UpdateModal
-            student={selectedStudent}
-            onClose={() => {
-              setShowUpdateModal(false);
-              setSelectedStudent(null);
-            }}
-            onUpdate={handleUpdate}
-          />
-        )}
+      {showUpdateModal && selectedStudent && (
+        <UpdateModal
+          student={selectedStudent}
+          onClose={() => {
+            setShowUpdateModal(false);
+            setSelectedStudent(null);
+          }}
+          onUpdate={handleUpdate}
+        />
+      )}
 
-        {showDeleteConfirm && selectedStudent && (
-          <DeleteConfirmation
-            student={selectedStudent}
-            onConfirm={() => handleDelete(selectedStudent._id)}
-            onCancel={() => {
-              setShowDeleteConfirm(false);
-              setSelectedStudent(null);
-            }}
-          />
-        )}
+      {showDeleteConfirm && selectedStudent && (
+        <DeleteConfirmation
+          student={selectedStudent}
+          onConfirm={() => handleDelete(selectedStudent._id)}
+          onCancel={() => {
+            setShowDeleteConfirm(false);
+            setSelectedStudent(null);
+          }}
+        />
+      )}
     </div>
   );
 }

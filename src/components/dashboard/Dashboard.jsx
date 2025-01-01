@@ -30,6 +30,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.post(
+        // "https://rpistudentmanagementserver.vercel.app/api/v1/student/upload",
         "http://localhost:5000/api/v1/student/upload",
         formDataToSend,
         {
@@ -44,6 +45,7 @@ export default function Dashboard() {
       toast.success("File uploaded successfully!");
     } catch (error) {
       setLoading(false);
+      console.log(error)
       toast.error("Upload failed");
     }
   };
